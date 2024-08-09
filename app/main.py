@@ -37,10 +37,10 @@ async def get_users():
 
 
 @app.get(
-    "/users/{id}",
+    "/users/{user_id}",
     response_model=User,
 )
-async def get_user(user_id: int):
+async def get_user(user_id: PydanticObjectId):
     user = await User.get(user_id)
     if not user:
         raise HTTPException(
@@ -55,7 +55,7 @@ async def get_user(user_id: int):
     "/users/{user_id}",
     response_model=User,
 )
-async def update_user(user_id: int, user_data: UserUpdate):
+async def update_user(user_id: PydanticObjectId, user_data: UserUpdate):
     user = await User.get(user_id)
     if not user:
         raise HTTPException(
@@ -72,7 +72,7 @@ async def update_user(user_id: int, user_data: UserUpdate):
     "/user/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_user(user_id: int):
+async def delete_user(user_id: PydanticObjectId):
     user = await User.get(user_id)
     if not user:
         raise HTTPException(
@@ -106,7 +106,7 @@ async def get_wallets():
     "/wallets/{wallet_id}",
     response_model=Wallet,
 )
-async def get_wallet(wallet_id: int):
+async def get_wallet(wallet_id: PydanticObjectId):
     wallet = await Wallet.get(wallet_id)
     if wallet:
         return wallet
@@ -120,7 +120,7 @@ async def get_wallet(wallet_id: int):
     "/wallets/{wallet_id}",
     response_model=Wallet,
 )
-async def update_wallet(wallet_id: int, wallet_data: WalletUpdate):
+async def update_wallet(wallet_id: PydanticObjectId, wallet_data: WalletUpdate):
     wallet = await Wallet.get(wallet_id)
     if not wallet:
         raise HTTPException(
@@ -137,7 +137,7 @@ async def update_wallet(wallet_id: int, wallet_data: WalletUpdate):
     "/wallet/{wallet_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_wallet(wallet_id: int):
+async def delete_wallet(wallet_id: PydanticObjectId):
     wallet = await Wallet.get(wallet_id)
     if not wallet:
         raise HTTPException(
@@ -162,8 +162,8 @@ async def create_transaction(transaction: Transaction):
     "/transactions/{wallet_id}",
     response_model=List[Transaction],
 )
-async def get_transactions(wallet_id: int):
-    transactions = await Transaction.get(wallet_id)
+async def get_transactions(wallet_id: str):
+    transactions = await Transaction.find(Transaction.type == wallet_id).to_list()
     return transactions
 
 
@@ -171,7 +171,7 @@ async def get_transactions(wallet_id: int):
     "/transactions/{transactions_id}",
     response_model=Transaction,
 )
-async def update_transaction(transactions_id: int, transaction_data: TransactionUpdate):
+async def update_transaction(transactions_id: PydanticObjectId, transaction_data: TransactionUpdate):
     transaction = await Transaction.get(transactions_id)
     if not transaction:
         raise HTTPException(
@@ -187,7 +187,7 @@ async def update_transaction(transactions_id: int, transaction_data: Transaction
 @app.delete("/transactions/{transactions_id}",
             status_code=status.HTTP_204_NO_CONTENT,
             )
-async def delete_transaction(transactions_id: int):
+async def delete_transaction(transactions_id: PydanticObjectId):
     transaction = await Transaction.get(transactions_id)
     if not transaction:
         raise HTTPException(

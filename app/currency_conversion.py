@@ -1,6 +1,6 @@
 import aiohttp
 
-from app.config import CONVERSION_API_URL
+from app.config import CONVERSION_API_URL, COMMISSION
 
 
 async def get_conversion_rate(base_currency: str, target_currency: str) -> float:
@@ -17,4 +17,4 @@ async def get_conversion_rate(base_currency: str, target_currency: str) -> float
 
 
 def apply_commission(amount: float) -> float:
-    return amount * 0.97  # 3%
+    return amount * (1 - COMMISSION)  # 3%

@@ -7,15 +7,21 @@ from app.main import app
 async def test_create_user():
     async with AsyncClient(
             app=app,
-            base_url="http://test"
+            base_url="http://127.0.0.1:8000"
     ) as client:
         response = await client.post(
             "/users/",
             json={
-                "user_id": 1,
+                "_id": "5eb7cf5a86d9755df3a6c993",
+                "user_id": 999,
                 "name": "test",
                 "email": "test@test.com",
             },
         )
         assert response.status_code == 200
-        assert response.json() == {"status": "User created"}
+        assert response.json() == {
+                "_id": "5eb7cf5a86d9755df3a6c993",
+                "user_id": 999,
+                "name": "test",
+                "email": "test@test.com",
+            }
